@@ -1,33 +1,42 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { Product, ProductsService } from './products.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ProductsService } from './products.service';
+import { CreateProductDto, updateProductDto } from './dtos/create-product.dto';
 
 @Controller('products')
 export class ProductsController {
-    constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
-    @Get()
-    getProducts() { 
-        return this.productsService.getProducts();
-    }
+  @Get()
+  getProducts(@Query('category') category?: string) {
+    return this.productsService.getProducts(category);
+  }
 
-    // Example url: http://localhost:3000/api/v1/products/iuyi-hjfyu-hgyiugy-iuyiuy
-    @Get(':id')
-    getProductById(@Param('id') id: string) { 
-        return this.productsService.getProductById(id);
-    }
+  @Get(':id')
+  getProductById(@Param('id') id: string) {
+    return this.productsService.getProductById(id);
+  }
 
-    @Post()
-    createProduct(@Body() body: Omit<Product, 'id'>) { 
-        return this.productsService.createProduct(body);
-    }
+  @Post()
+  createProduct(@Body() body: CreateProductDto) {
+    return this.productsService.createProduct(body);
+  }
 
-    @Patch(':id')
-    updateProduct(@Param('id') id: string, @Body() body: Partial<Omit<Product, 'id'>>) { 
-        return this.productsService.updateProduct(id, body);
-    }
+  @Patch(':id')
+  updateProduct(@Param('id') id: string, @Body() body: updateProductDto) {
+    return this.productsService.updateProduct(id, body);
+  }
 
-    @Delete(':id')
-    deleteProduct(@Param('id') id: string) { 
-        return this.productsService.deleteProduct(id);
-    }
+  @Delete(':id')
+  deleteProduct(@Param('id') id: string) {
+    return this.productsService.deleteProduct(id);
+  }
 }
